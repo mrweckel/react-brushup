@@ -4,6 +4,7 @@ import marked from 'marked';
 import CheckList from './CheckList';
 
 
+//Set custom propType
 let titlePropType = (props, propName, componentName) => {
   if (props[propName]) {
     let value = props[propName];
