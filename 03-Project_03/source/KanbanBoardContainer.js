@@ -33,8 +33,46 @@ class KanbanBoardContainer extends Component {
     });
   }
 
+  addTask(cardId, taskName) {
+
+  }
+
+  deleteTask(cardId, taskId, taskIndex) {
+
+    //Find Index of card
+    let cardIndex = this.state.cards.findIndex((card) => {
+      card.id === cardId;
+    });
+
+    //Create a new object without the task
+    let nextState = update(
+      this.state.cards, {
+        [cardIndex]: {
+          tasks: { $splice: [[taskIndex,1]] }
+        }
+      });
+
+    //Set the component state to the mutated object
+    this.setState({cards: nextState});
+
+    //Call API to remove task from server
+    fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}`,{
+      method: 'delete',
+      headers: API_HEADERS
+    });
+  }
+
+  toggleTask(cardId, taskId, taskIndex) {
+
+  }
+
   render() {
-    return <KanbanBoard cards={this.state.cards} />
+    return <KanbanBoard cards={this.state.cards}
+                        taskCallbacks={{
+                          toggle: this.toggleTask.bind(this),
+                          delete: this.deleteTask.bind(this),
+                          add: this.addTask.bind(this),
+                        }}/>
   }
 }
 
