@@ -1,2 +1,2 @@
 #React Brush-up
-##Contains many exercises for overall React learning
+## Contains many exercises for overall React learning
