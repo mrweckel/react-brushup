@@ -1,72 +1,58 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import About from './About';
+import Home  from './Home';
+import Repos from './Repos';
 
-class AnimatedShoppingList extends Component {
+class App extends Component {
 
   constructor() {
-
     super(...arguments);
 
-    this.state={
-      items: [
-        {id:1, name: 'Milk'},
-        {id:2, name: 'Yogurt'},
-        {id:3, name: 'Orange Juice'},
-      ]
+    this.state = {
+      route: window.location.hash.substr(1), //returns string after the hash symbol
     }
   }
 
-  handleChange(evt) {
+  componentDidMount() {
 
-    if(evt.key === 'Enter') {
-      //Create new item and set the current time as it's id
-      let newItem = {id: Date.now(), name: evt.target.value};
-      //Create new array with previous items plus the value the user typed
-      let newItems = this.state.items.concat(newItem);
-      //Clear the text field
-      evt.target.value = '';
-      //Set the new state
-      this.setState({items: newItems});
-    }
-  }
-
-  handleRemove(i) {
-
-    //Create a new array without the clicked item
-    var newItems = this.state.items;
-    newItems.splice(i,1);
-
-    //Set the new state
-    this.setState({items: newItems});
+    window.addEventListener('hashchange', () => {
+      this.setState({
+        route: window.location.hash.substr(1),
+      });
+    });
   }
 
   render() {
 
-    let shoppingItems = this.state.items.map((item,i) => (
-      <div key={item.id}
-           className={"item"}
-           onClick={this.handleRemove.bind(this, i)}>
-           {item.name}
-      </div>
-    ));
+    let Child;
+
+    switch(this.state.route) {
+      case '/about':
+        Child = About;
+        break;
+      case '/repos':
+        Child = Repos;
+        break
+      default:
+        Child = Home;
+    }
 
     return(
       <div>
-        <ReactCSSTransitionGroup transitionName="example"
-                                 transitionEnterTimeout={300}
-                                 transitionLeaveTimeout={300}
-                                 transitionAppear={true}
-                                 transitionAppearTimeout={300}>
-          {shoppingItems}
-        </ReactCSSTransitionGroup>
-        <input type="text" value={this.state.newItem} onKeyDown={this.handleChange.bind(this)} />
+        <header>
+          <menu>
+            <ul>
+              <li><a href="#/about">About</a></li>
+              <li><a href="#/repos">Repos</a></li>
+            </ul>
+          </menu>
+        </header>
+        <Child />
       </div>
     );
   }
 }
 
-
-
-render(<AnimatedShoppingList />, document.getElementById('root'));
+render(<App />, document.getElementById('root'));
