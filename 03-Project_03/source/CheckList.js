@@ -19,7 +19,7 @@ class CheckList extends Component {
         {task.name}
         <a href="#"
            className="checklist__task--remove"
-           onClick={this.props.delete.bind(null, this.props.cardId, task.id, taskIndex)} />
+           onClick={this.props.taskCallbacks.delete.bind(null, this.props.cardId, task.id, taskIndex)} />
       </li>
     ));
 
@@ -28,7 +28,7 @@ class CheckList extends Component {
         <ul>{tasks}</ul>
         <input type="text"
                className="checklist--add-task"
-               placeHolder="Type then hit Enter to add a task"
+               placeholder="Type then hit Enter to add a task"
                onKeyPress={this.checkInputKeyPress.bind(this)}/>
       </div>
     );

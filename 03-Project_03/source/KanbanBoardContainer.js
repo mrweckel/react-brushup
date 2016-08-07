@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import update from 'react-addons-update';
 
+import 'babel-polyfill'
 import 'whatwg-fetch';
-//**NEED TO IMPORT BABEL POLYFILL WHEN I GET WIFI**
 
 
 import KanbanBoard from './KanbanBoard';
@@ -36,14 +37,17 @@ class KanbanBoardContainer extends Component {
 
   addTask(cardId, taskName) {
 
+    //Keep reference to prevState in case of network failure
+    let prevState = this.state;
+
+
     //Find the index of the card
-    //** Need to look up findIndex **//
     let cardIndex = this.state.cards.findIndex((card) => {
-      card.id === cardId;
+      return card.id === cardId;
     });
 
     //Set a new task with a temporary ID
-    let newTask = {id: Date.Now(), name: taskName, done: false};
+    let newTask = {id: Date.now(), name: taskName, done: false};
 
     //Create a new object and push the new task to the array of tasks
     let nextState = update(this.state.cards, {
@@ -58,14 +62,25 @@ class KanbanBoardContainer extends Component {
     fetch(`${API_URL}/cards/${cardId}/tasks`, {
       method: 'post',
       headers: API_HEADERS,
-      body: JSON.Stringify(),
+      body: JSON.stringify(),
     })
-    .then((response) => repsponse.JSON())
+    .then((response) => {
+      if(response.ok){
+        return response.json();
+      } else {
+        //Throw error if response wasn't ok
+        //so you can revert back to before optimistic changes
+        throw new Error("Server response was not ok");
+      }
+    })
     .then((responseData) => {
       //When the server returns the new, actual id
       //update the state on the component by replacing temp id
       newTask.id = responseData.id;
       this.setState({cards:nextState});
+    })
+    .catch((error) => {
+      this.setState(prevState);
     });
   }
 
@@ -73,7 +88,7 @@ class KanbanBoardContainer extends Component {
 
     //Find Index of card
     let cardIndex = this.state.cards.findIndex((card) => {
-      card.id === cardId;
+      return card.id === cardId;
     });
 
     //Create a new object without the task
@@ -98,7 +113,7 @@ class KanbanBoardContainer extends Component {
 
     //Find Index of card
     let cardIndex = this.state.cards.findIndex((card) => {
-      card.id === cardId
+      return card.id === cardId
     });
 
     //Save a reference to task's done value
@@ -124,10 +139,10 @@ class KanbanBoardContainer extends Component {
     this.setState({cards: nextState});
 
     //Call the API to set the state on the server
-    fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}, {
+    fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}`, {
       method: 'put',
       headers: API_HEADERS,
-      body: JSON.Stringify({done: newDoneValue});
+      body: JSON.stringify({done: newDoneValue}),
     });
   }
 
