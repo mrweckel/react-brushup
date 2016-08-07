@@ -43,17 +43,24 @@ class AnimatedShoppingList extends Component {
   }
 
   render() {
-    let shoppingItems = this.state.items.map((item,i) => {
+
+    let shoppingItems = this.state.items.map((item,i) => (
       <div key={item.id}
            className={"item"}
            onClick={this.handleRemove.bind(this, i)}>
            {item.name}
       </div>
-    });
+    ));
 
     return(
       <div>
-        {shoppingItems}
+        <ReactCSSTransitionGroup transitionName="example"
+                                 transitionEnterTimeout={300}
+                                 transitionLeaveTimeout={300}
+                                 transitionAppear={true}
+                                 transitionAppearTimeout={300}>
+          {shoppingItems}
+        </ReactCSSTransitionGroup>
         <input type="text" value={this.state.newItem} onKeyDown={this.handleChange.bind(this)} />
       </div>
     );
