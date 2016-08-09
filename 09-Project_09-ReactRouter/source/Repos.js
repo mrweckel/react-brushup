@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { Link } from 'react-router';
 import 'whatwg-fetch';
 
 class Repos extends Component {
@@ -16,17 +17,32 @@ class Repos extends Component {
   componentDidMount() {
 
     fetch('https://api.github.com/users/pro-react/repos')
-    .then((response) => response.json())
+    .then((response) => {
+      if(response.ok) {
+        return response.json();
+      } else {
+        throw new Error ("Server response was not ok");
+      }
+    })
     .then((responseData) => {
       this.setState({repositories: responseData})
+    })
+    .catch((error) => {
+      this.props.history.pushState(null,'/error');
     });
   }
 
   render() {
-
     let repos = this.state.repositories.map((repo) => (
-      <li key={repo.id}>{repo.name}</li>
+      <li key={repo.id}>
+        <Link to={"/repo/" + repo.name}>{repo.name}</Link>
+      </li>
     ));
+
+    //Q: Whats going on here with the double amps && ?
+    //A: It will set child to the return of React.cloneElement only if the left expression is true. So in english:
+    // If this.props.children exists, the go ahead and call React.cloneElement...
+    let child = this.props.children && React.cloneElement(this.props.children, { repositories: this.state.repositories })
 
     return(
       <div>
@@ -34,6 +50,7 @@ class Repos extends Component {
         <ul>
           {repos}
         </ul>
+        {child}
       </div>
     );
   }
