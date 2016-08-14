@@ -17,7 +17,7 @@
     "webpack-dev-server": "~1.14.*"
   },
   "dependencies": {
-    "history": "^3.0.0",
+    "history": "^2.0.0",
     "react": "^15.0.0",
     "react-addons-css-transition-group": "^15.3.0",
     "react-addons-update": "^15.3.0",

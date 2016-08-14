@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 
-import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router';
-
+import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router';
 
 import About from './About';
 import Home  from './Home';
@@ -33,7 +32,7 @@ class App extends Component {
 }
 
 render((
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={Home} />
 
