@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 import marked from 'marked';
 
 import CheckList from './CheckList';
@@ -59,9 +61,11 @@ class Card extends Component {
       <div className="card">
         <div style={sideColor} />
         <div className={this.state.showDetails ? "card__title card__title--is-open" : "card__title"} onClick={this.toggleDetails.bind(this)}>{this.props.title}</div>
-        <div className="card__details">
+        <ReactCSSTransitionGroup transitionName="toggle"
+                                 transitionEnterTimeout={250}
+                                 transitionLeaveTimeout={250}>
           {cardDetails}
-        </div>
+        </ReactCSSTransitionGroup>
       </div>
     )
   };
